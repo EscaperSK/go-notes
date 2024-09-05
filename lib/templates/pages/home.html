@@ -2,6 +2,8 @@
 
 {{define "content"}}
 
-    {{template "parts.button"}}
+{{range .}}
+{{template "note.item" .}}
+{{end}}
 
 {{end}}

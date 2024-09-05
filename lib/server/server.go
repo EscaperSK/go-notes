@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/EscaperSK/go-notes/lib/app/note"
 	"github.com/EscaperSK/go-notes/lib/fs"
 )
 
@@ -19,13 +20,16 @@ func Serve() {
 }
 
 func regHandlers() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	publicFS := fs.NewPublicFS()
+
+	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
-			render(w, "pages.home", nil)
+			notes := note.All()
+			render(w, "pages.home", notes)
 			return
 		}
 
-		fs.Handle(w, r)
+		publicFS.ServeHTTP(w, r)
 	})
 }
 

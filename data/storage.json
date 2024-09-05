@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "name": "note 1",
+        "content": "note 1 content",
+        "tags": [
+            "tag 1"
+        ]
+    },
+    {
+        "id": 2,
+        "name": "note 2",
+        "content": "note 2 content",
+        "tags": [
+            "tag 2"
+        ]
+    },
+    {
+        "id": 3,
+        "name": "note 3",
+        "content": "note 3 content",
+        "tags": [
+            "tag 1",
+            "tag 2"
+        ]
+    }
+]
