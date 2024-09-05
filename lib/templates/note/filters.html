@@ -1,0 +1,23 @@
+<div class="filters" hx-get="/filter" hx-target=".note-list"
+    hx-trigger="keyup from:#search changed delay:600ms, change from:#search changed delay:600ms, click from:.filters-tag-list>* delay:600ms">
+    <input type="search" name="search" id="search" class="search">
+
+    <div class="filters-tag-list">
+        {{range .}}
+        <span hx-on:click="this.classList.toggle('active')">{{.}}</span>
+        {{end}}
+    </div>
+</div>
+
+<script>
+    const filters = document.querySelector('.filters');
+    const search = filters.querySelector('#search');
+    const tagList = filters.querySelector('.filters-tag-list');
+
+    filters.addEventListener('htmx:configRequest', function (e) {
+        e.detail.parameters['search'] = search.value;
+
+        const tags = tagList.querySelectorAll('.active');
+        e.detail.parameters['tags'] = [...tags].map((tag) => tag.textContent);
+    });
+</script>

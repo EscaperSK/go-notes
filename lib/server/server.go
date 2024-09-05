@@ -35,11 +35,23 @@ func regHandlers() {
 				Notes []note.Note
 				Tags  []string
 			}{notes, tags}
+
 			render(w, "pages.home", data)
 			return
 		}
 
 		publicFS.ServeHTTP(w, r)
+	})
+
+	http.HandleFunc("GET /filter", func(w http.ResponseWriter, r *http.Request) {
+		query := r.URL.Query()
+		search := query.Get("search")
+		tags := query["tags"]
+
+		filters := note.Filters{Name: search, Tags: tags}
+		data := note.Filter(notes, filters)
+
+		render(w, "note.list", data)
 	})
 }
 

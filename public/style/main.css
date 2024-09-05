@@ -48,19 +48,71 @@ body {
 
 /* Note */
 
-.note-list>*:not(:last-child) {
-    margin-bottom: 20px;
+.note-list {
+    display: grid;
+    gap: 20px;
 }
 
 .note-item {
+    word-break: break-all;
+    word-break: break-word;
+
     border: 1px solid black;
+    border-radius: 8px;
+
+    text-decoration: none;
+
     padding: 8px;
 }
 
-.note-title {
+.note-item-title {
     margin-bottom: 4px;
 }
 
-.note-tag-list {
+.note-item-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+
     margin-bottom: 4px;
+}
+
+.note-item-tag-list>* {
+    font-size: 14px;
+
+    border-radius: 5px;
+    padding: 0 4px 2px 4px;
+
+    color: white;
+    background-color: rgb(91, 179, 182);
+}
+
+/* Filters */
+
+.filters {
+    margin-bottom: 20px;
+}
+
+.search {
+    width: 100%;
+
+    margin-bottom: 8px;
+}
+
+.filters-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+}
+
+.filters-tag-list>* {
+    border-radius: 5px;
+    padding: 0 4px 2px 4px;
+
+    color: white;
+    background-color: rgb(58, 70, 70);
+}
+
+.filters-tag-list>*.active {
+    background-color: rgb(91, 179, 182);
 }
