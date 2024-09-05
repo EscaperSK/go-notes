@@ -2,8 +2,12 @@
 
 {{define "content"}}
 
-{{range .}}
-{{template "note.item" .}}
-{{end}}
+<div class="note-list">
+    <h1 class="title">Заметки</h1>
+
+    {{range .Notes}}
+    {{template "note.item" .}}
+    {{end}}
+</div>
 
 {{end}}

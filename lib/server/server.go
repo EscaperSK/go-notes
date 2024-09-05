@@ -6,13 +6,20 @@ import (
 	"net/http"
 
 	"github.com/EscaperSK/go-notes/lib/app/note"
+	"github.com/EscaperSK/go-notes/lib/app/tag"
 	"github.com/EscaperSK/go-notes/lib/fs"
 )
 
 var templates *template.Template
 
+var notes []note.Note
+var tags []string
+
 func Serve() {
 	templates = parseTemplates()
+
+	notes = note.All()
+	tags = tag.All()
 
 	regHandlers()
 
@@ -24,8 +31,11 @@ func regHandlers() {
 
 	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
-			notes := note.All()
-			render(w, "pages.home", notes)
+			data := struct {
+				Notes []note.Note
+				Tags  []string
+			}{notes, tags}
+			render(w, "pages.home", data)
 			return
 		}
 

@@ -1,11 +1,11 @@
-<div>
-    <h3>{{.Name}}</h3>
-    <div>
+<div class="note-item">
+    <h3 class="note-title">{{.Name}}</h3>
+    <div class="note-tag-list">
         {{range .Tags}}
         <span>{{.}}</span>
         {{end}}
     </div>
     <div>
-        {{.Content}}
+        {{.Gist}}
     </div>
 </div>
