@@ -1,21 +1,25 @@
 package server
 
 import (
+	"bytes"
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/EscaperSK/go-notes/lib/app/note"
 	"github.com/EscaperSK/go-notes/lib/app/tag"
 	"github.com/EscaperSK/go-notes/lib/fs"
 )
 
+var layouts *template.Template
 var templates *template.Template
 
-var notes []note.Note
+var notes note.Notes
 var tags []string
 
 func Serve() {
+	layouts = parseLayouts()
 	templates = parseTemplates()
 
 	notes = note.All()
@@ -27,20 +31,16 @@ func Serve() {
 }
 
 func regHandlers() {
-	publicFS := fs.NewPublicFS()
+	http.Handle("GET /", fs.NewPublicFS())
 
-	http.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/" {
-			data := struct {
-				Notes []note.Note
-				Tags  []string
-			}{notes, tags}
+	http.HandleFunc("GET /{$}", func(w http.ResponseWriter, r *http.Request) {
+		data := struct {
+			Notes note.Notes
+			Tags  []string
+		}{notes, tags}
 
-			render(w, "pages.home", data)
-			return
-		}
-
-		publicFS.ServeHTTP(w, r)
+		render(w, "layout", "pages.home", data)
+		return
 	})
 
 	http.HandleFunc("GET /filter", func(w http.ResponseWriter, r *http.Request) {
@@ -51,12 +51,43 @@ func regHandlers() {
 		filters := note.Filters{Name: search, Tags: tags}
 		data := note.Filter(notes, filters)
 
-		render(w, "note.list", data)
+		render(w, "layout", "note.list", data)
+	})
+
+	http.HandleFunc("GET /note/{noteId}", func(w http.ResponseWriter, r *http.Request) {
+		pathNoteId := r.PathValue("noteId")
+
+		noteId, err := strconv.Atoi(pathNoteId)
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		single := note.Single(noteId, notes)
+		if single == nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		data := struct {
+			Note note.Note
+			Tags []string
+		}{single, tags}
+
+		render(w, "layout", "pages.note", data)
 	})
 }
 
-func render(w http.ResponseWriter, name string, data any) {
-	err := templates.ExecuteTemplate(w, name, data)
+func render(w http.ResponseWriter, layout string, name string, data any) {
+	buf := bytes.NewBuffer([]byte{})
+	err := templates.ExecuteTemplate(buf, name, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+
+	content := template.HTML(buf.Bytes())
+
+	err = layouts.ExecuteTemplate(w, layout, content)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

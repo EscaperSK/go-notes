@@ -12,12 +12,19 @@ const (
 	PartSep string = "."
 )
 
+func parseLayouts() *template.Template {
+	return template.Must(template.ParseGlob("lib/templates/layouts/*.html"))
+}
+
 func parseTemplates() *template.Template {
 	templates := template.New("")
 	root := filepath.Clean("lib/templates")
 	skip := len(root) + 1
 
 	err := filepath.WalkDir(root, func(path string, d os.DirEntry, err error) error {
+		if path == filepath.Clean("lib/templates/layouts") {
+			return filepath.SkipDir
+		}
 		if d.IsDir() || !strings.HasSuffix(path, ".html") {
 			return nil
 		}

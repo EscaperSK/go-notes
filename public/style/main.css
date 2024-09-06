@@ -87,6 +87,41 @@ body {
     background-color: rgb(91, 179, 182);
 }
 
+.note-item-date {
+    text-align: end;
+    margin-top: 4px;
+}
+
+/* Note single */
+
+.note-single {
+    word-break: break-all;
+    word-break: break-word;
+
+    text-decoration: none;
+}
+
+.note-single-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+
+    margin-bottom: 8px;
+}
+
+.note-single-tag-list>* {
+    border-radius: 5px;
+    padding: 0 4px 2px 4px;
+
+    color: white;
+    background-color: rgb(91, 179, 182);
+}
+
+.note-single-date {
+    text-align: end;
+    margin-top: 8px;
+}
+
 /* Filters */
 
 .filters {

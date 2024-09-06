@@ -1,0 +1,15 @@
+<h1 class="title">{{.Note.Name}}</h1>
+
+<div class="note-single">
+    <div class="note-single-tag-list">
+        {{range .Note.Tags}}
+        <span>{{.}}</span>
+        {{end}}
+    </div>
+    <div>
+        {{.Note.Gist}}
+    </div>
+    <div class="note-single-date">
+        {{.Note.FullDateString}}
+    </div>
+</div>

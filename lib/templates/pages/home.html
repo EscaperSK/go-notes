@@ -1,7 +1,3 @@
-{{template "layouts.base" .}}
-
-{{define "content"}}
-
 <h1 class="title">Заметки</h1>
 
 {{template "note.filters" .Tags}}
@@ -9,5 +5,3 @@
 <div class="note-list">
     {{template "note.list" .Notes}}
 </div>
-
-{{end}}

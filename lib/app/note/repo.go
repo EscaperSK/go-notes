@@ -9,23 +9,38 @@ import (
 
 const path = "data/storage.json"
 
-func All() []Note {
+func All() Notes {
 	bytes, err := os.ReadFile(path)
 	if err != nil {
-		return []Note{}
+		return Notes{}
 	}
 
-	notes := []Note{}
-	err = json.Unmarshal(bytes, &notes)
+	values := []note{}
+	err = json.Unmarshal(bytes, &values)
 	if err != nil {
-		return []Note{}
+		return Notes{}
+	}
+
+	notes := Notes{}
+	for _, note := range values {
+		notes = append(notes, &note)
 	}
 
 	return notes
 }
 
-func Filter(notes []Note, filters Filters) []Note {
-	filtered := []Note{}
+func Single(noteId int, notes Notes) Note {
+	for _, note := range notes {
+		if note.Id == noteId {
+			return note
+		}
+	}
+
+	return nil
+}
+
+func Filter(notes Notes, filters Filters) Notes {
+	filtered := Notes{}
 
 	for _, note := range notes {
 		if len(filters.Name) > 0 && !strings.Contains(note.Name, filters.Name) {
