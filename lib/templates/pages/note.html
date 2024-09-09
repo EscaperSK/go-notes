@@ -12,4 +12,20 @@
     <div class="note-single-date">
         {{.Note.FullDateString}}
     </div>
+    <div class="note-single-buttons">
+        <a href="/note/{{.Note.Id}}/edit" class="note-single-edit" hx-boost="true">Редактировать</a>
+        <a href="/" class="note-single-back" data-back-btn>Назад</a>
+    </div>
 </div>
+
+<script>
+    (() => {
+        const backButton = document.querySelector('a[data-back-btn]');
+
+        backButton.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            history.back();
+        });
+    })();
+</script>

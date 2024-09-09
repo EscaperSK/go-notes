@@ -10,14 +10,16 @@
 </div>
 
 <script>
-    const filters = document.querySelector('.filters');
-    const search = filters.querySelector('#search');
-    const tagList = filters.querySelector('.filters-tag-list');
+    (() => {
+        const filters = document.querySelector('.filters');
+        const search = filters.querySelector('#search');
+        const tagList = filters.querySelector('.filters-tag-list');
 
-    filters.addEventListener('htmx:configRequest', function (e) {
-        e.detail.parameters['search'] = search.value;
+        filters.addEventListener('htmx:configRequest', function (e) {
+            e.detail.parameters['search'] = search.value;
 
-        const tags = tagList.querySelectorAll('.active');
-        e.detail.parameters['tags'] = [...tags].map((tag) => tag.textContent);
-    });
+            const tags = tagList.querySelectorAll('.active');
+            e.detail.parameters['tags'] = [...tags].map((tag) => tag.textContent);
+        });
+    })();
 </script>

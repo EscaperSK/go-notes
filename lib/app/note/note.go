@@ -2,7 +2,7 @@ package note
 
 import "time"
 
-const gistLen = 140
+const gistLen = 200
 
 type Note *note
 type Notes []Note
