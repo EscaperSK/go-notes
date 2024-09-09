@@ -182,6 +182,74 @@ body {
     background-color: rgb(122, 122, 122);
 }
 
+
+/* Note edit */
+
+.note-edit {
+    word-break: break-all;
+    word-break: break-word;
+
+    text-decoration: none;
+}
+
+.note-edit-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 6px;
+
+    margin-bottom: 8px;
+}
+
+.note-edit-tag-list>* {
+    border-radius: 5px;
+    padding: 0 4px 2px 4px;
+
+    color: white;
+    background-color: rgb(58, 70, 70);
+}
+
+.note-edit-tag-list>*.active {
+    background-color: rgb(91, 179, 182);
+}
+
+.note-edit-content {
+    max-width: 100%;
+    min-width: 100%;
+    height: 200px;
+    font-size: inherit;
+}
+
+.note-edit-date {
+    text-align: end;
+    margin-top: 8px;
+}
+
+.note-edit-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.note-edit-buttons>button {
+    text-decoration: none;
+    border: none;
+    font-size: inherit;
+
+    border-radius: 5px;
+    padding: 0 4px 2px 4px;
+}
+
+.note-edit-save {
+    color: white;
+    background-color: rgb(123, 121, 201);
+}
+
+.note-edit-cancel {
+    color: white;
+    background-color: rgb(122, 122, 122);
+}
+
 /* Filters */
 
 .filters {

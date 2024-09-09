@@ -39,7 +39,7 @@ func regHandlers() {
 			Tags  []string
 		}{notes, tags}
 
-		render(w, "layout", "pages.home", data)
+		renderPage(w, "layout", "pages.home", data)
 		return
 	})
 
@@ -51,10 +51,46 @@ func regHandlers() {
 		filters := note.Filters{Name: search, Tags: tags}
 		data := note.Filter(notes, filters)
 
-		render(w, "layout", "note.list", data)
+		renderTmpl(w, "note.list", data)
 	})
 
 	http.HandleFunc("GET /note/{noteId}", func(w http.ResponseWriter, r *http.Request) {
+		pathNoteId := r.PathValue("noteId")
+
+		noteId, err := strconv.Atoi(pathNoteId)
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		data := note.Single(noteId, notes)
+		if data == nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		renderPage(w, "layout", "pages.note", data)
+	})
+
+	http.HandleFunc("GET /note/{noteId}/view", func(w http.ResponseWriter, r *http.Request) {
+		pathNoteId := r.PathValue("noteId")
+
+		noteId, err := strconv.Atoi(pathNoteId)
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		data := note.Single(noteId, notes)
+		if data == nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		renderTmpl(w, "note.view", data)
+	})
+
+	http.HandleFunc("GET /note/{noteId}/edit", func(w http.ResponseWriter, r *http.Request) {
 		pathNoteId := r.PathValue("noteId")
 
 		noteId, err := strconv.Atoi(pathNoteId)
@@ -74,11 +110,18 @@ func regHandlers() {
 			Tags []string
 		}{single, tags}
 
-		render(w, "layout", "pages.note", data)
+		renderTmpl(w, "note.edit", data)
 	})
 }
 
-func render(w http.ResponseWriter, layout string, name string, data any) {
+func renderTmpl(w http.ResponseWriter, name string, data any) {
+	err := templates.ExecuteTemplate(w, name, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func renderPage(w http.ResponseWriter, layout string, name string, data any) {
 	buf := bytes.NewBuffer([]byte{})
 	err := templates.ExecuteTemplate(buf, name, data)
 	if err != nil {

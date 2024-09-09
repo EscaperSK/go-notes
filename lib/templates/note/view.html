@@ -1,0 +1,29 @@
+<div class="note-single" hx-target="this" hx-swap="outerHTML">
+    <div class="note-single-tag-list">
+        {{range .Tags}}
+        <span>{{.}}</span>
+        {{end}}
+    </div>
+    <div>
+        {{.Content}}
+    </div>
+    <div class="note-single-date">
+        {{.FullDateString}}
+    </div>
+    <div class="note-single-buttons">
+        <a hx-get="/note/{{.Id}}/edit" class="note-single-edit">Редактировать</a>
+        <a href="/" class="note-single-back" data-back-btn>Назад</a>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const backButton = document.querySelector('a[data-back-btn]');
+
+        backButton.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            history.back();
+        });
+    })();
+</script>
