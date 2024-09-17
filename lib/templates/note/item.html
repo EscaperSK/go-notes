@@ -3,15 +3,16 @@
         <h3 class="note-item-title">{{.Name}}</h3>
         <a href="/note/{{.Id}}" class="note-item-link" hx-boost="true"></a>
     </div>
+
+    {{if .Tags}}
     <div class="note-item-tag-list">
         {{range .Tags}}
         <span>{{.}}</span>
         {{end}}
     </div>
-    <div class="note-item-content">
-        {{.Gist}}
-    </div>
-    <div class="note-item-date">
-        {{.DateString}}
-    </div>
+    {{end}}
+
+    <div class="note-item-content">{{.Gist}}</div>
+
+    <div class="note-item-date">{{.DateString}}</div>
 </div>

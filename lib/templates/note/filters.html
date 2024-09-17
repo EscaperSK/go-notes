@@ -1,12 +1,14 @@
 <div class="filters" hx-get="/filter" hx-target=".note-list"
-    hx-trigger="keyup from:#search changed delay:600ms, change from:#search changed delay:600ms, click from:.filters-tag-list>* delay:600ms">
+    hx-trigger="keyup from:#search changed delay:300ms, change from:#search changed delay:300ms, click from:.filters-tag-list>* delay:300ms">
     <input type="search" name="search" id="search" class="search">
 
+    {{if .}}
     <div class="filters-tag-list">
         {{range .}}
-        <button hx-on:click="this.classList.toggle('active')">{{.}}</button>
+        <button type="button" hx-on:click="this.classList.toggle('active')">{{.}}</button>
         {{end}}
     </div>
+    {{end}}
 </div>
 
 <script>

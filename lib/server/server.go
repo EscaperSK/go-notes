@@ -114,6 +114,32 @@ func regHandlers() {
 
 		renderTmpl(w, "note.edit", data)
 	})
+
+	http.HandleFunc("PUT /note/{noteId}", func(w http.ResponseWriter, r *http.Request) {
+		pathNoteId := r.PathValue("noteId")
+
+		noteId, err := strconv.Atoi(pathNoteId)
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		single := note.Single(noteId, notes)
+		if single == nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		r.ParseForm()
+
+		single.Name = r.PostFormValue("name")
+		single.Content = r.PostFormValue("content")
+		single.Tags = r.PostForm["tags"]
+
+		// TODO: write into storage.json
+
+		renderTmpl(w, "note.view", single)
+	})
 }
 
 func renderTmpl(w http.ResponseWriter, name string, data any) {

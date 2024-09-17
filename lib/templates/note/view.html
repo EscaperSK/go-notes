@@ -1,17 +1,22 @@
-<div class="note-single" hx-target="this" hx-swap="outerHTML">
-    <div class="note-single-tag-list">
-        {{range .Tags}}
-        <span>{{.}}</span>
+<div hx-target="this" hx-swap="outerHTML">
+    <h1 class="title">{{.Name}}</h1>
+
+    <div class="note-single">
+        {{if .Tags}}
+        <div class="note-single-tag-list">
+            {{range .Tags}}
+            <span>{{.}}</span>
+            {{end}}
+        </div>
         {{end}}
-    </div>
-    <div>
-        {{.Content}}
-    </div>
-    <div class="note-single-date">
-        {{.FullDateString}}
-    </div>
-    <div class="note-single-buttons">
-        <button class="note-single-edit" hx-get="/note/{{.Id}}/edit">Редактировать</button>
-        <button class="note-single-back" hx-on:click="history.back()">Назад</button>
+
+        <div>{{.Content}}</div>
+
+        <div class="note-single-date">{{.FullDateString}}</div>
+
+        <div class="note-single-buttons">
+            <button class="note-single-edit" hx-get="/note/{{.Id}}/edit">Редактировать</button>
+            <a href="/" class="note-single-back" hx-boost="true" hx-target="body" hx-swap="innerHTML">Назад</a>
+        </div>
     </div>
 </div>

@@ -1,32 +1,39 @@
-<form class="note-edit" hx-put="/note/{{.Note.Id}}" hx-target="this" hx-swap="outerHTML">
-    <div class="note-edit-tag-list">
-        {{range .Note.Tags}}
-        <button class="active" hx-on:click="this.classList.toggle('active')">{{.}}</button>
-        {{end}}
-        {{range .Tags}}
-        <button hx-on:click="this.classList.toggle('active')">{{.}}</button>
-        {{end}}
-    </div>
-    <textarea name="content" class="note-edit-content">{{.Note.Content}}</textarea>
-    <div class="note-edit-date">
-        {{.Note.FullDateString}}
-    </div>
-    <div class="note-edit-buttons">
-        <button type="submit" class="note-edit-save">Сохранить</button>
-        <button class="note-edit-cancel" hx-get="/note/{{.Note.Id}}/view">Отменить</button>
-    </div>
-</form>
+<div hx-target="this" hx-swap="outerHTML">
+    <h1 class="title">{{.Note.Name}}</h1>
 
-<script>
-    (() => {
-        const form = document.querySelector('form');
-        const tagList = form.querySelector('.note-edit-tag-list');
+    <form class="note-edit" hx-put="/note/{{.Note.Id}}">
+        <input type="text" name="name" class="note-edit-name" value="{{.Note.Name}}">
 
-        form.addEventListener('htmx:configRequest', function (e) {
-            if (e.detail.verb === 'get') return;
+        <div class="note-edit-tag-list">
+            {{range .Note.Tags}}
+            <button type="button" class="active" hx-on:click="this.classList.toggle('active')">{{.}}</button>
+            {{end}}
+            {{range .Tags}}
+            <button type="button" hx-on:click="this.classList.toggle('active')">{{.}}</button>
+            {{end}}
+        </div>
 
-            const tags = tagList.querySelectorAll('.active');
-            e.detail.parameters['tags'] = [...tags].map((tag) => tag.textContent);
-        });
-    })();
-</script>
+        <textarea name="content" class="note-edit-content">{{.Note.Content}}</textarea>
+
+        <div class="note-edit-date">{{.Note.FullDateString}}</div>
+
+        <div class="note-edit-buttons">
+            <button type="submit" class="note-edit-save">Сохранить</button>
+            <button class="note-edit-cancel" hx-get="/note/{{.Note.Id}}/view">Отменить</button>
+        </div>
+    </form>
+
+    <script>
+        (() => {
+            const form = document.querySelector('form');
+            const tagList = form.querySelector('.note-edit-tag-list');
+
+            form.addEventListener('htmx:configRequest', function (e) {
+                if (e.detail.verb === 'get') return;
+
+                const tags = tagList.querySelectorAll('.active');
+                e.detail.parameters['tags'] = [...tags].map((tag) => tag.textContent);
+            });
+        })();
+    </script>
+</div>
