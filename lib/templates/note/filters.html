@@ -4,7 +4,7 @@
 
     <div class="filters-tag-list">
         {{range .}}
-        <span hx-on:click="this.classList.toggle('active')">{{.}}</span>
+        <button hx-on:click="this.classList.toggle('active')">{{.}}</button>
         {{end}}
     </div>
 </div>

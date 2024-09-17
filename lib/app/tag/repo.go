@@ -37,3 +37,17 @@ func Filter(tags []string, search string) []string {
 
 	return filtered
 }
+
+func Except(tags []string, except []string) []string {
+	result := []string{}
+
+	for _, tag := range tags {
+		if slices.Contains(except, tag) {
+			continue
+		}
+
+		result = append(result, tag)
+	}
+
+	return result
+}

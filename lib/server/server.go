@@ -105,10 +105,12 @@ func regHandlers() {
 			return
 		}
 
+		otherTags := tag.Except(tags, single.Tags)
+
 		data := struct {
 			Note note.Note
 			Tags []string
-		}{single, tags}
+		}{single, otherTags}
 
 		renderTmpl(w, "note.edit", data)
 	})

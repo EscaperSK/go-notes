@@ -11,19 +11,7 @@
         {{.FullDateString}}
     </div>
     <div class="note-single-buttons">
-        <a hx-get="/note/{{.Id}}/edit" class="note-single-edit">Редактировать</a>
-        <a href="/" class="note-single-back" data-back-btn>Назад</a>
+        <button class="note-single-edit" hx-get="/note/{{.Id}}/edit">Редактировать</button>
+        <button class="note-single-back" hx-on:click="history.back()">Назад</button>
     </div>
 </div>
-
-<script>
-    (() => {
-        const backButton = document.querySelector('a[data-back-btn]');
-
-        backButton.addEventListener('click', function (e) {
-            e.preventDefault();
-
-            history.back();
-        });
-    })();
-</script>
