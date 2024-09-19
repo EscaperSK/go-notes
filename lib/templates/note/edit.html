@@ -4,14 +4,7 @@
     <form class="note-edit" hx-put="/note/{{.Note.Id}}">
         <input type="text" name="name" class="note-edit-name" value="{{.Note.Name}}">
 
-        <div class="note-edit-tag-list">
-            {{range .Note.Tags}}
-            <button type="button" class="active" hx-on:click="this.classList.toggle('active')">{{.}}</button>
-            {{end}}
-            {{range .Tags}}
-            <button type="button" hx-on:click="this.classList.toggle('active')">{{.}}</button>
-            {{end}}
-        </div>
+        {{template "tag.form-list" .}}
 
         <textarea name="content" class="note-edit-content">{{.Note.Content}}</textarea>
 
@@ -26,7 +19,7 @@
     <script>
         (() => {
             const form = document.querySelector('form');
-            const tagList = form.querySelector('.note-edit-tag-list');
+            const tagList = form.querySelector('.form-tag-list');
 
             form.addEventListener('htmx:configRequest', function (e) {
                 if (e.detail.verb === 'get') return;

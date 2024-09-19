@@ -2,6 +2,7 @@ package note
 
 import (
 	"encoding/json"
+	"net/http"
 	"os"
 	"slices"
 	"strings"
@@ -64,4 +65,37 @@ func containsAll(tags []string, elements []string) bool {
 	}
 
 	return true
+}
+
+func Update(note Note, r *http.Request) {
+	r.ParseForm()
+
+	postTags := r.PostForm["tags"]
+	if postTags == nil {
+		postTags = []string{}
+	}
+
+	note.Name = r.PostFormValue("name")
+	note.Content = r.PostFormValue("content")
+	note.Tags = postTags
+}
+
+func Save(notes Notes) error {
+	storage, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer storage.Close()
+
+	asJson, err := json.MarshalIndent(notes, "", "\t")
+	if err != nil {
+		return err
+	}
+
+	_, err = storage.Write(asJson)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

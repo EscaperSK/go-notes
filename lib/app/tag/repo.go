@@ -7,9 +7,7 @@ import (
 	"github.com/EscaperSK/go-notes/lib/app/note"
 )
 
-func All() []string {
-	notes := note.All()
-
+func All(notes note.Notes) []string {
 	tags := []string{}
 	for _, note := range notes {
 		tags = append(tags, note.Tags...)

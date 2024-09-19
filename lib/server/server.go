@@ -23,7 +23,7 @@ func Serve() {
 	templates = parseTemplates()
 
 	notes = note.All()
-	tags = tag.All()
+	tags = tag.All(notes)
 
 	regHandlers()
 
@@ -130,13 +130,15 @@ func regHandlers() {
 			return
 		}
 
-		r.ParseForm()
+		note.Update(single, r)
 
-		single.Name = r.PostFormValue("name")
-		single.Content = r.PostFormValue("content")
-		single.Tags = r.PostForm["tags"]
+		tags = tag.All(notes)
 
-		// TODO: write into storage.json
+		err = note.Save(notes)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 		renderTmpl(w, "note.view", single)
 	})

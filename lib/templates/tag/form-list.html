@@ -1,0 +1,109 @@
+<div class="form-tag-list">
+    {{if .Note}}
+    {{range .Note.Tags}}
+    <button type="button" class="active" onclick="this.classList.toggle('active')">{{.}}</button>
+    {{end}}
+    {{end}}
+    {{range .Tags}}
+    <button type="button" onclick="this.classList.toggle('active')">{{.}}</button>
+    {{end}}
+</div>
+
+<div class="form-new-tag">
+    <input type="text">
+    <button type="button">+</button>
+</div>
+
+<script>
+    (() => {
+        const list = document.querySelector('.form-tag-list');
+        const newTagBlock = document.querySelector('.form-new-tag');
+        const input = newTagBlock.querySelector('input');
+        const button = newTagBlock.querySelector('button');
+
+        input.addEventListener('keypress', (e) => {
+            if (e.key !== "Enter") return;
+
+            e.preventDefault();
+            button.click();
+        });
+
+        button.addEventListener('click', () => {
+            const value = input.value.trim();
+            if (value.length <= 0) return;
+            input.value = '';
+
+            const tag = cleanText(value);
+            if (tag.length <= 0) return;
+
+            let exists = false;
+            for (const el of list.children) {
+                if (el.textContent.toLowerCase() !== tag.toLowerCase()) continue;
+                exists = true;
+
+                if (el.classList.contains('active')) continue;
+                el.classList.add('active');
+            }
+
+            if (exists) return;
+
+            const newTag = `<button type="button" class="active" onclick="this.classList.toggle('active')">${tag}</button>`;
+            list.insertAdjacentHTML('beforeend', newTag);
+        });
+
+        /**
+         * @param {string} string
+         * 
+         * @return {string}
+         */
+        function cleanText(string) {
+            string = escapeHtml(string);
+
+            const parser = new DOMParser();
+            const html = parser.parseFromString(string, 'text/html').body;
+
+            const scripts = html.querySelectorAll('script');
+            for (const script of scripts) {
+                script.remove();
+            }
+
+            cleanChildrenAttributes(html);
+
+            return escapeHtml(html.textContent);
+        }
+
+        /**
+         * @param {string} string
+         * 
+         * @return {string}
+         */
+        function escapeHtml(string) {
+            const area = document.createElement('textarea');
+            area.textContent = string;
+
+            return area.innerHTML;
+        }
+
+        /**
+         * @param {HTMLElement} html
+         */
+        function cleanChildrenAttributes(html) {
+            const danger = ['src', 'href', 'xlink:href'];
+
+            for (const child of html.children) {
+                for (const { name, value } of child.attributes) {
+                    const val = value.replace(/\s+/g, '').toLowerCase();
+
+                    let remove = false;
+
+                    remove ||= name.startsWith('on');
+                    remove ||= danger.includes(name) && (val.includes('javascript:') || val.includes('data:text/html'));
+
+                    if (remove) child.removeAttribute(name);
+                }
+
+                cleanChildrenAttributes(child);
+            }
+        }
+    })();
+</script>
