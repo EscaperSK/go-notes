@@ -6,9 +6,22 @@ import (
 	"os"
 	"slices"
 	"strings"
+	"time"
 )
 
 const path = "data/storage.json"
+
+func New(name string, content string, tags []string) Note {
+	if tags == nil {
+		tags = []string{}
+	}
+
+	return &note{
+		Name:    name,
+		Content: content,
+		Tags:    tags,
+	}
+}
 
 func All() Notes {
 	bytes, err := os.ReadFile(path)
@@ -67,7 +80,27 @@ func containsAll(tags []string, elements []string) bool {
 	return true
 }
 
-func Update(note Note, r *http.Request) {
+func Create(notes Notes, r *http.Request) Note {
+	r.ParseForm()
+
+	postTags := r.PostForm["tags"]
+	if postTags == nil {
+		postTags = []string{}
+	}
+
+	newNote := &note{
+		Id:        notes[len(notes)-1].Id + 1,
+		Timestamp: time.Now().Unix(),
+
+		Name:    r.PostFormValue("name"),
+		Content: r.PostFormValue("content"),
+		Tags:    postTags,
+	}
+
+	return newNote
+}
+
+func Edit(note Note, r *http.Request) {
 	r.ParseForm()
 
 	postTags := r.PostForm["tags"]

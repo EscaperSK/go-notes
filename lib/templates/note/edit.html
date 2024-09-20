@@ -1,12 +1,22 @@
 <div hx-target="this" hx-swap="outerHTML">
-    <h1 class="title">{{.Note.Name}}</h1>
+    <h1 class="title">Редактировать заметку</h1>
 
     <form class="note-edit" hx-put="/note/{{.Note.Id}}">
-        <input type="text" name="name" class="note-edit-name" value="{{.Note.Name}}">
+        <div class="note-edit-name">
+            <input type="text" name="name" value="{{.Note.Name}}">
+            {{if and .Errs .Errs.name}}
+            <span class="error-message">{{.Errs.name}}</span>
+            {{end}}
+        </div>
 
         {{template "tag.form-list" .}}
 
-        <textarea name="content" class="note-edit-content">{{.Note.Content}}</textarea>
+        <div class="note-edit-content">
+            <textarea name="content">{{.Note.Content}}</textarea>
+            {{if and .Errs .Errs.content}}
+            <span class="error-message">{{.Errs.content}}</span>
+            {{end}}
+        </div>
 
         <div class="note-edit-date">{{.Note.FullDateString}}</div>
 

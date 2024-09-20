@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/EscaperSK/go-notes/lib/app/note"
 	"github.com/EscaperSK/go-notes/lib/app/tag"
+	"github.com/EscaperSK/go-notes/lib/errs"
 	"github.com/EscaperSK/go-notes/lib/fs"
 )
 
@@ -69,7 +71,7 @@ func regHandlers() {
 			return
 		}
 
-		renderPage(w, "layout", "pages.note", data)
+		renderPage(w, "layout", "note.view", data)
 	})
 
 	http.HandleFunc("GET /note/{noteId}/view", func(w http.ResponseWriter, r *http.Request) {
@@ -88,6 +90,61 @@ func regHandlers() {
 		}
 
 		renderTmpl(w, "note.view", data)
+	})
+
+	http.HandleFunc("GET /note", func(w http.ResponseWriter, r *http.Request) {
+		data := struct {
+			Note note.Note
+			Tags []string
+			Errs errs.ValidationErrors
+		}{nil, tags, nil}
+
+		renderPage(w, "layout", "note.create", data)
+	})
+
+	http.HandleFunc("POST /note", func(w http.ResponseWriter, r *http.Request) {
+		r.ParseForm()
+
+		name := r.PostFormValue("name")
+		content := r.PostFormValue("content")
+
+		validationErrs := errs.ValidationErrors{}
+		if len(name) <= 0 {
+			validationErrs["name"] = "Это обязательное поле"
+		}
+		if len(content) <= 0 {
+			validationErrs["content"] = "Это обязательное поле"
+		}
+
+		if len(validationErrs) > 0 {
+			noteTags := r.PostForm["tags"]
+			single := note.New(name, content, noteTags)
+			otherTags := tag.Except(tags, single.Tags)
+
+			data := struct {
+				Note note.Note
+				Tags []string
+				Errs errs.ValidationErrors
+			}{single, otherTags, validationErrs}
+
+			renderPage(w, "layout", "note.create", data)
+			return
+		}
+
+		newNote := note.Create(notes, r)
+
+		notes = append(notes, newNote)
+		tags = tag.All(notes)
+
+		err := note.Save(notes)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		url := fmt.Sprintf("/note/%d", newNote.Id)
+
+		http.Redirect(w, r, url, http.StatusFound)
 	})
 
 	http.HandleFunc("GET /note/{noteId}/edit", func(w http.ResponseWriter, r *http.Request) {
@@ -110,7 +167,8 @@ func regHandlers() {
 		data := struct {
 			Note note.Note
 			Tags []string
-		}{single, otherTags}
+			Errs errs.ValidationErrors
+		}{single, otherTags, nil}
 
 		renderTmpl(w, "note.edit", data)
 	})
@@ -130,7 +188,41 @@ func regHandlers() {
 			return
 		}
 
-		note.Update(single, r)
+		r.ParseForm()
+
+		name := r.PostFormValue("name")
+		content := r.PostFormValue("content")
+
+		validationErrs := errs.ValidationErrors{}
+		if len(name) <= 0 {
+			validationErrs["name"] = "Это обязательное поле"
+		}
+		if len(content) <= 0 {
+			validationErrs["content"] = "Это обязательное поле"
+		}
+
+		if len(validationErrs) > 0 {
+			id := single.Id
+			timestamp := single.Timestamp
+			noteTags := r.PostForm["tags"]
+
+			single := note.New(name, content, noteTags)
+			single.Id = id
+			single.Timestamp = timestamp
+
+			otherTags := tag.Except(tags, single.Tags)
+
+			data := struct {
+				Note note.Note
+				Tags []string
+				Errs errs.ValidationErrors
+			}{single, otherTags, validationErrs}
+
+			renderTmpl(w, "note.edit", data)
+			return
+		}
+
+		note.Edit(single, r)
 
 		tags = tag.All(notes)
 
