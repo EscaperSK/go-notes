@@ -234,6 +234,27 @@ func regHandlers() {
 
 		renderTmpl(w, "note.view", single)
 	})
+
+	http.HandleFunc("DELETE /note/{noteId}", func(w http.ResponseWriter, r *http.Request) {
+		pathNoteId := r.PathValue("noteId")
+
+		noteId, err := strconv.Atoi(pathNoteId)
+		if err != nil {
+			http.NotFound(w, r)
+			return
+		}
+
+		notes = note.Delete(noteId, notes)
+		tags = tag.All(notes)
+
+		err = note.Save(notes)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	})
 }
 
 func renderTmpl(w http.ResponseWriter, name string, data any) {

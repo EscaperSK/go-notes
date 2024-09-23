@@ -15,7 +15,12 @@
         <div class="note-single-date">{{.FullDateString}}</div>
 
         <div class="note-single-buttons">
-            <button class="note-single-edit" hx-get="/note/{{.Id}}/edit">Редактировать</button>
+            <div>
+                <button class="note-single-edit" hx-get="/note/{{.Id}}/edit">Редактировать</button>
+                <form action="/note/{{.Id}}" method="delete" hx-boost="true" hx-confirm="Удалить эту заметку?">
+                    <button type="submit" class="note-single-delete">Удалить</button>
+                </form>
+            </div>
             <a href="/" class="note-single-back" hx-boost="true" hx-target="body" hx-swap="innerHTML">Назад</a>
         </div>
     </div>

@@ -41,6 +41,14 @@ body {
     }
 }
 
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+}
+
 .title {
     text-align: center;
     margin-bottom: 12px;
@@ -51,6 +59,20 @@ body {
 }
 
 /* Note */
+
+.note-create-link {
+    background-image: url(/assets/plus.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+
+    position: absolute;
+    right: 0;
+}
 
 .note-list {
     display: grid;
@@ -170,7 +192,12 @@ body {
     margin-top: 8px;
 }
 
-.note-single-buttons>* {
+.note-single-buttons form {
+    display: inline-block;
+}
+
+.note-single-buttons button,
+.note-single-buttons a {
     text-decoration: none;
     font-size: inherit;
 
@@ -183,6 +210,13 @@ body {
 .note-single-edit {
     color: white;
     background-color: rgb(123, 121, 201);
+
+    margin-right: 8px;
+}
+
+.note-single-delete {
+    color: white;
+    background-color: rgb(250, 71, 71);
 }
 
 .note-single-back {

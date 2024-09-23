@@ -132,3 +132,9 @@ func Save(notes Notes) error {
 
 	return nil
 }
+
+func Delete(noteId int, notes Notes) Notes {
+	return slices.DeleteFunc(notes, func(n Note) bool {
+		return n.Id == noteId
+	})
+}
