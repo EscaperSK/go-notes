@@ -42,7 +42,6 @@ func regHandlers() {
 		}{notes, tags}
 
 		renderPage(w, "layout", "pages.home", data)
-		return
 	})
 
 	http.HandleFunc("GET /filter", func(w http.ResponseWriter, r *http.Request) {
